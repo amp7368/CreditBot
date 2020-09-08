@@ -38,8 +38,8 @@ public class CommandProfile implements DoCommand {
         embedBuilder.setTitle(profile.name + " has " + profile.credits + " credit(s)");
         embedBuilder.setColor(profile.highestColor);
         embedBuilder.setDescription(
-                "Roles: " + profile.roles + "\n" +
-                        profile.guildRank + " in " + profile.guild
+                "**Roles:** " + profile.roles + "\n" +
+                       "**Guild:** " + profile.guildRank + " in " + profile.guild
         );
 
         event.getChannel().sendMessage(embedBuilder.build()).queue();

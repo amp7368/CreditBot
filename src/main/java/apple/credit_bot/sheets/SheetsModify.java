@@ -78,10 +78,38 @@ public class SheetsModify {
         return rowToPutPlayer;
     }
 
+    private static void verifyProfile(Member member, int rowToPutPlayer) throws IOException {
+        List<String> roles = new ArrayList<>();
+        for (Role role : member.getRoles()) {
+            roles.add(role.getName());
+        }
+
+        final String playerRowRange = SheetsRanges.dataSheet +
+                SheetsUtils.addA1Notation(SheetsRanges.playerRow1, 0, rowToPutPlayer) +
+                ":" + SheetsUtils.addA1Notation(SheetsRanges.playerRow2, 0, rowToPutPlayer);
+        ValueRange playerRowValueRange = SheetsConstants.sheets.get(SheetsConstants.spreadsheetId, playerRowRange).execute();
+        List<Object> playerValues = new ArrayList<>();
+        playerValues.add(member.getEffectiveName());
+        playerValues.add(member.getId());
+        try {
+            playerValues.add(playerRowValueRange.getValues().get(0).get(2));
+        } catch (NullPointerException | IndexOutOfBoundsException e) {
+            playerValues.add(0);
+        }
+        playerValues.add(member.getColorRaw());
+        playerValues.add(String.join(", ", roles));
+
+        playerRowValueRange.setValues(Collections.singletonList(playerValues));
+
+        SheetsConstants.sheets.update(SheetsConstants.spreadsheetId, playerRowValueRange.getRange(), playerRowValueRange).setValueInputOption("USER_ENTERED").execute();
+    }
+
     public static Profile getProfile(Member discordMember) throws IOException {
         int row = findRowFromDiscord(discordMember.getId());
         if (row == -1) {
             row = addPlayer(discordMember);
+        } else {
+            verifyProfile(discordMember, row);
         }
         final String playerRowRange = SheetsRanges.dataSheet + SheetsUtils.addA1Notation(SheetsRanges.playerRow1, 0, row) +
                 ":" + SheetsUtils.addA1Notation(SheetsRanges.playerRow2, 0, row);
