@@ -1,6 +1,7 @@
 package apple.credit_bot.sheets;
 
-import apple.credit_bot.discord.DiscordBot;
+import apple.credit_bot.discord.data.Profile;
+
 import com.google.api.services.sheets.v4.model.ValueRange;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
@@ -49,7 +50,7 @@ public class SheetsModify {
     private static int addPlayer(Member member) throws IOException {
         List<String> roles = new ArrayList<>();
         for (Role role : member.getRoles()) {
-            roles.add(role.getColorRaw() + "." + role.getName());
+            roles.add(role.getName());
         }
         ValueRange idValueRange = SheetsConstants.sheets.get(SheetsConstants.spreadsheetId,
                 SheetsRanges.dataSheet + SheetsRanges.discordIds).setMajorDimension("COLUMNS").execute();
@@ -60,19 +61,34 @@ public class SheetsModify {
             rowToPutPlayer = idValueRange.getValues().size();
         }
 
-        final String playerRowRange = SheetsRanges.dataSheet + SheetsUtils.addA1Notation(SheetsRanges.playerRow, 0, rowToPutPlayer);
+        final String playerRowRange = SheetsRanges.dataSheet +
+                SheetsUtils.addA1Notation(SheetsRanges.playerRow1, 0, rowToPutPlayer) +
+                ":" + SheetsUtils.addA1Notation(SheetsRanges.playerRow2, 0, rowToPutPlayer);
         ValueRange playerRowValueRange = SheetsConstants.sheets.get(SheetsConstants.spreadsheetId, playerRowRange).execute();
-
         List<Object> playerValues = new ArrayList<>();
         playerValues.add(member.getEffectiveName());
         playerValues.add(member.getId());
         playerValues.add(0);
-        playerValues.add(String.join(",", roles));
+        playerValues.add(member.getColorRaw());
+        playerValues.add(String.join(", ", roles));
 
         playerRowValueRange.setValues(Collections.singletonList(playerValues));
 
-        SheetsConstants.sheets.update(SheetsConstants.spreadsheetId, playerRowRange, playerRowValueRange).setValueInputOption("USER_ENTERED").execute();
+        SheetsConstants.sheets.update(SheetsConstants.spreadsheetId, playerRowValueRange.getRange(), playerRowValueRange).setValueInputOption("USER_ENTERED").execute();
         return rowToPutPlayer;
+    }
+
+    public static Profile getProfile(Member discordMember) throws IOException {
+        int row = findRowFromDiscord(discordMember.getId());
+        if (row == -1) {
+            row = addPlayer(discordMember);
+        }
+        final String playerRowRange = SheetsRanges.dataSheet + SheetsUtils.addA1Notation(SheetsRanges.playerRow1, 0, row) +
+                ":" + SheetsUtils.addA1Notation(SheetsRanges.playerRow2, 0, row);
+        ValueRange playerRowValueRange = SheetsConstants.sheets.get(SheetsConstants.spreadsheetId, playerRowRange).execute();
+        List<Object> playerRowValues = playerRowValueRange.getValues().get(0);
+        System.out.println(playerRowValueRange.getValues().size());
+        return new Profile(playerRowValues); //todo send error messages
     }
 
     /**

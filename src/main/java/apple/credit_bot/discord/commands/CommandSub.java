@@ -15,7 +15,7 @@ public class CommandSub implements DoCommand {
 
         // if this is not in the proper format, say as such
         if (eventContentSplit.length < 3) {
-            event.getChannel().sendMessage("Usage: " + DiscordBot.PREFIX + DiscordBot.ADD_COMMAND + " [playerName] [pointsToAdd]").queue();
+            event.getChannel().sendMessage("Usage: " + DiscordBot.PREFIX + DiscordBot.SUB_COMMAND + " [playerName] [pointsToAdd]").queue();
             return;
         }
 
@@ -30,7 +30,7 @@ public class CommandSub implements DoCommand {
         try {
             pointsToAdd = -Integer.parseInt(eventContentSplit[2]);
         } catch (NumberFormatException e) {
-            event.getChannel().sendMessage("Usage: " + DiscordBot.PREFIX + DiscordBot.ADD_COMMAND + " [playerName] [pointsToAdd]\n'" + eventContentSplit[2] + "' is not a number.").queue();
+            event.getChannel().sendMessage("Usage: " + DiscordBot.PREFIX + DiscordBot.SUB_COMMAND + " [playerName] [pointsToAdd]\n'" + eventContentSplit[2] + "' is not a number.").queue();
             return;
         }
 
