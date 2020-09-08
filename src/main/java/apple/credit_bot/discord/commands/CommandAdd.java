@@ -2,6 +2,7 @@ package apple.credit_bot.discord.commands;
 
 import apple.credit_bot.CreditMain;
 import apple.credit_bot.discord.DiscordBot;
+import apple.credit_bot.discord.DiscordUtils;
 import apple.credit_bot.sheets.SheetsModify;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -22,29 +23,10 @@ public class CommandAdd implements DoCommand {
         }
 
         // look for the player that the user entered
-        Member discordMember;
         final String nameToGet = eventContentSplit[1];
-        final String nameToGetLower = nameToGet.toLowerCase();
-        List<Member> membersInGuild = event.getGuild().getMembers();
-        List<Member> membersWithName = new ArrayList<>();
-        for (Member memberInGuild : membersInGuild) {
-            if (memberInGuild.getEffectiveName().toLowerCase().contains(nameToGetLower)) {
-                membersWithName.add(memberInGuild);
-            }
-        }
-        final int membersWithNameLength = membersWithName.size();
-        if (membersWithNameLength == 0) {
-            // quit with an error message
-            event.getChannel().sendMessage(String.format("Sorry, but nobody's name contains '%s'.", nameToGet)).queue();
+        Member discordMember = DiscordUtils.getMemberFromName(nameToGet, event);
+        if (discordMember == null)
             return;
-        } else if (membersWithNameLength == 1) {
-            // we found the person
-            discordMember = membersWithName.get(0);
-        } else {
-            // ask the user to narrow their search
-            event.getChannel().sendMessage(String.format("There are %d people that have '%s' in their name. Please refine your search.", membersWithNameLength, nameToGet)).queue();
-            return;
-        }
 
         // get the points that we are entering
         int pointsToAdd;
@@ -56,9 +38,13 @@ public class CommandAdd implements DoCommand {
         }
 
         try {
-            SheetsModify.addPoints(discordMember, pointsToAdd);
+            int newPoints = SheetsModify.addPoints(discordMember, pointsToAdd);
+            event.getChannel().sendMessage(discordMember.getEffectiveName() + " now has " + newPoints + " point(s)").queue();
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (NumberFormatException e) {
+            event.getChannel().sendMessage("There was an error reading the number of credits that "
+                    + discordMember.getEffectiveName() + " has.").queue();
         }
     }
 }

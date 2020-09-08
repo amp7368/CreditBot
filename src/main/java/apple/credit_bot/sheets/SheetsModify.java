@@ -11,7 +11,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class SheetsModify {
-    public static void addPoints(Member member, int pointsToAdd) throws IOException, NumberFormatException {
+    public static int addPoints(Member member, int pointsToAdd) throws IOException, NumberFormatException {
         String myDiscordId = member.getId();
         int rowToModify = findRowFromDiscord(myDiscordId);
         if (rowToModify == -1) {
@@ -20,7 +20,7 @@ public class SheetsModify {
         String creditsRange = SheetsRanges.dataSheet + SheetsUtils.addA1Notation(SheetsRanges.credits, 0, rowToModify);
         ValueRange creditsValueRange = SheetsConstants.sheets.get(SheetsConstants.spreadsheetId,
                 creditsRange).execute();
-
+        int newPoints;
         try {
             int pointsThere;
             Object pointsThereObject = creditsValueRange.getValues().get(0).get(0);
@@ -31,11 +31,13 @@ public class SheetsModify {
                 // this might throw a number format exception to tell the method above that there is not a number in the credits section of the player's
             }
             creditsValueRange.setValues(Collections.singletonList(Collections.singletonList(pointsThere + pointsToAdd)));
+            newPoints = pointsThere + pointsToAdd;
         } catch (NullPointerException | IndexOutOfBoundsException e) {
             creditsValueRange.setValues(Collections.singletonList(Collections.singletonList(pointsToAdd)));
+            newPoints = pointsToAdd;
         }
         SheetsConstants.sheets.update(SheetsConstants.spreadsheetId, creditsRange, creditsValueRange).setValueInputOption("USER_ENTERED").execute();
-
+        return newPoints;
     }
 
     /**
