@@ -1,9 +1,9 @@
 package apple.credit_bot.discord;
 
 
-import apple.credit_bot.CreditMain;
+import apple.credit_bot.discord.commands.CommandAdd;
+import apple.credit_bot.discord.commands.CommandSub;
 import apple.credit_bot.discord.commands.DoCommand;
-import apple.credit_bot.discord.commands.Test;
 import apple.credit_bot.discord.reactions.DoReaction;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -17,12 +17,9 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nonnull;
 import javax.security.auth.login.LoginException;
 import java.io.*;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 
 public class DiscordBot extends ListenerAdapter {
-    private static final String PREFIX = "f!";
     private static final String BOT_TOKEN_FILE_PATH = "data/discordToken.data";
 
 
@@ -30,6 +27,10 @@ public class DiscordBot extends ListenerAdapter {
     private static final HashMap<String, DoReaction> reactionMap = new HashMap<>();
     public static String discordToken = ""; // my bot
     public static JDA client;
+
+    public static final String PREFIX = "f!";
+    public static final String ADD_COMMAND = "add";
+    public static final String SUB_COMMAND = "sub";
 
     public DiscordBot() {
         File file = new File(BOT_TOKEN_FILE_PATH);
@@ -61,7 +62,8 @@ public class DiscordBot extends ListenerAdapter {
 
     @Override
     public void onReady(@Nonnull ReadyEvent event) {
-        commandMap.put(PREFIX+"o/", new Test());
+        commandMap.put(PREFIX+ADD_COMMAND,new CommandAdd());
+        commandMap.put(PREFIX+SUB_COMMAND,new CommandSub());
     }
 
     @Override
