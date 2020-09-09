@@ -5,6 +5,8 @@ import apple.credit_bot.discord.commands.*;
 import apple.credit_bot.discord.reactions.DoReaction;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -22,8 +24,9 @@ public class DiscordBot extends ListenerAdapter {
 
 
     private static final HashMap<String, DoCommand> commandMap = new HashMap<>();
+    private static final HashMap<String, DoCommand> opCommandMap = new HashMap<>();
     private static final HashMap<String, DoReaction> reactionMap = new HashMap<>();
-    public static String discordToken = ""; // my bot
+    public static String discordToken; // my bot
     public static JDA client;
 
     public static final String PREFIX = "f!";
@@ -32,6 +35,7 @@ public class DiscordBot extends ListenerAdapter {
     public static final String PROFILE_COMMAND = "profile";
     public static final String LEADERBOARD_COMMAND = "list";
     public static final String UPDATE_COMMAND = "up";
+    public static final String CREDIT_SUM_COMMAND = "total credits";
 
     public DiscordBot() {
         File file = new File(BOT_TOKEN_FILE_PATH);
@@ -63,11 +67,14 @@ public class DiscordBot extends ListenerAdapter {
 
     @Override
     public void onReady(@Nonnull ReadyEvent event) {
-        commandMap.put(PREFIX+ADD_COMMAND,new CommandAdd());
-        commandMap.put(PREFIX+SUB_COMMAND,new CommandSub());
-        commandMap.put(PREFIX+PROFILE_COMMAND,new CommandProfile());
-        commandMap.put(PREFIX+LEADERBOARD_COMMAND,new CommandLeaderBoard());
-        commandMap.put(PREFIX+UPDATE_COMMAND,new CommandUpdate());
+        opCommandMap.put(PREFIX + ADD_COMMAND, new CommandAdd());
+        opCommandMap.put(PREFIX + SUB_COMMAND, new CommandSub());
+        opCommandMap.put(PREFIX + PROFILE_COMMAND, new CommandProfile());
+        opCommandMap.put(PREFIX + LEADERBOARD_COMMAND, new CommandLeaderBoard());
+        opCommandMap.put(PREFIX + UPDATE_COMMAND, new CommandUpdate());
+        opCommandMap.put(PREFIX + CREDIT_SUM_COMMAND, new CommandCreditSum());
+
+        commandMap.put(PREFIX + PROFILE_COMMAND, new CommandMyProfile());
     }
 
     @Override
@@ -79,11 +86,24 @@ public class DiscordBot extends ListenerAdapter {
         // the author is not a bot
 
         String messageContent = event.getMessage().getContentStripped();
-        // deal with the different commands
-        for (String command : commandMap.keySet()) {
-            if (messageContent.startsWith(command)) {
-                commandMap.get(command).dealWithCommand(event);
-                break;
+        final Member member = event.getMember();
+        if (member == null) return;
+
+        if (member.hasPermission(Permission.MANAGE_SERVER)) {
+            // deal with the different commands
+            for (String command : commandMap.keySet()) {
+                if (messageContent.startsWith(command)) {
+                    opCommandMap.get(command).dealWithCommand(event);
+                    break;
+                }
+            }
+        } else {
+            // deal with the different commands
+            for (String command : commandMap.keySet()) {
+                if (messageContent.startsWith(command)) {
+                    commandMap.get(command).dealWithCommand(event);
+                    break;
+                }
             }
         }
     }
