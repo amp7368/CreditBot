@@ -6,4 +6,5 @@ public class SheetsRanges {
     public static final String credits = "C2";
     public static final String playerRow1 = "A2";
     public static final String playerRow2 = "2";
+    public static final String playerColEnd = "G";
 }

@@ -3,7 +3,7 @@ package apple.credit_bot.discord.commands;
 import apple.credit_bot.discord.DiscordBot;
 import apple.credit_bot.discord.DiscordUtils;
 import apple.credit_bot.discord.data.Profile;
-import apple.credit_bot.sheets.SheetsModify;
+import apple.credit_bot.sheets.SheetsQuery;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -29,7 +29,7 @@ public class CommandProfile implements DoCommand {
             return;
         Profile profile;
         try {
-            profile = SheetsModify.getProfile(discordMember);
+            profile = SheetsQuery.getProfile(discordMember);
         } catch (IOException e) {
             e.printStackTrace();
             return;

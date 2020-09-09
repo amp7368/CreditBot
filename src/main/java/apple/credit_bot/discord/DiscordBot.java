@@ -1,10 +1,7 @@
 package apple.credit_bot.discord;
 
 
-import apple.credit_bot.discord.commands.CommandAdd;
-import apple.credit_bot.discord.commands.CommandProfile;
-import apple.credit_bot.discord.commands.CommandSub;
-import apple.credit_bot.discord.commands.DoCommand;
+import apple.credit_bot.discord.commands.*;
 import apple.credit_bot.discord.reactions.DoReaction;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -33,6 +30,7 @@ public class DiscordBot extends ListenerAdapter {
     public static final String ADD_COMMAND = "add";
     public static final String SUB_COMMAND = "sub";
     public static final String PROFILE_COMMAND = "profile";
+    public static final String LEADERBOARD_COMMAND = "list";
 
     public DiscordBot() {
         File file = new File(BOT_TOKEN_FILE_PATH);
@@ -67,6 +65,7 @@ public class DiscordBot extends ListenerAdapter {
         commandMap.put(PREFIX+ADD_COMMAND,new CommandAdd());
         commandMap.put(PREFIX+SUB_COMMAND,new CommandSub());
         commandMap.put(PREFIX+PROFILE_COMMAND,new CommandProfile());
+        commandMap.put(PREFIX+LEADERBOARD_COMMAND,new CommandLeaderBoard());
     }
 
     @Override

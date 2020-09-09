@@ -47,7 +47,7 @@ public class SheetsModify {
      * @param member the discord member of the player
      * @return what row the player was added to
      */
-    private static int addPlayer(Member member) throws IOException {
+    static int addPlayer(Member member) throws IOException {
         List<String> roles = new ArrayList<>();
         for (Role role : member.getRoles()) {
             roles.add(role.getName());
@@ -78,7 +78,7 @@ public class SheetsModify {
         return rowToPutPlayer;
     }
 
-    private static void verifyProfile(Member member, int rowToPutPlayer) throws IOException {
+    static void verifyProfile(Member member, int rowToPutPlayer) throws IOException {
         List<String> roles = new ArrayList<>();
         for (Role role : member.getRoles()) {
             roles.add(role.getName());
@@ -104,21 +104,6 @@ public class SheetsModify {
         SheetsConstants.sheets.update(SheetsConstants.spreadsheetId, playerRowValueRange.getRange(), playerRowValueRange).setValueInputOption("USER_ENTERED").execute();
     }
 
-    public static Profile getProfile(Member discordMember) throws IOException {
-        int row = findRowFromDiscord(discordMember.getId());
-        if (row == -1) {
-            row = addPlayer(discordMember);
-        } else {
-            verifyProfile(discordMember, row);
-        }
-        final String playerRowRange = SheetsRanges.dataSheet + SheetsUtils.addA1Notation(SheetsRanges.playerRow1, 0, row) +
-                ":" + SheetsUtils.addA1Notation(SheetsRanges.playerRow2, 0, row);
-        ValueRange playerRowValueRange = SheetsConstants.sheets.get(SheetsConstants.spreadsheetId, playerRowRange).execute();
-        List<Object> playerRowValues = playerRowValueRange.getValues().get(0);
-        System.out.println(playerRowValueRange.getValues().size());
-        return new Profile(playerRowValues); //todo send error messages
-    }
-
     /**
      * finds the row corresponding to the id given
      *
@@ -127,7 +112,7 @@ public class SheetsModify {
      * otherwise if discord id is not found: -1
      * @throws IOException from google sheets
      */
-    private static int findRowFromDiscord(String myDiscordId) throws IOException {
+    static int findRowFromDiscord(String myDiscordId) throws IOException {
         ValueRange idValueRange = SheetsConstants.sheets.get(SheetsConstants.spreadsheetId, SheetsRanges.dataSheet + SheetsRanges.discordIds).setMajorDimension("COLUMNS").execute();
         if (idValueRange.getValues() == null) {
             // there is no one in the spreadsheet

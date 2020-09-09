@@ -1,6 +1,5 @@
 package apple.credit_bot.discord.commands;
 
-import apple.credit_bot.CreditMain;
 import apple.credit_bot.discord.DiscordBot;
 import apple.credit_bot.discord.DiscordUtils;
 import apple.credit_bot.sheets.SheetsModify;
@@ -8,8 +7,6 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class CommandAdd implements DoCommand {
     @Override

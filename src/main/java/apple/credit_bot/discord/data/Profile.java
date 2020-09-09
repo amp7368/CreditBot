@@ -4,7 +4,7 @@ import java.util.List;
 
 public class Profile {
     public String name;
-    public String credits;
+    public int credits;
     public int highestColor;
     public String roles;
     public String guild;
@@ -12,11 +12,18 @@ public class Profile {
 
     public Profile(List<Object> playerRowValues) throws NumberFormatException {
         name = playerRowValues.get(0).toString();
-        credits = playerRowValues.get(2).toString();
-        if (playerRowValues.get(3) instanceof Integer) {
-            highestColor = (int) playerRowValues.get(3);
+        final Object creditsObject = playerRowValues.get(2);
+        if (creditsObject instanceof Integer) {
+            credits = (int) creditsObject;
         } else {
-            highestColor = Integer.parseInt(playerRowValues.get(3).toString());
+            credits = Integer.parseInt(creditsObject.toString());
+            // this might throw a number format exception to tell the method above that there is not a number in the highest color section of the player's
+        }
+        final Object highestColorObject = playerRowValues.get(3);
+        if (highestColorObject instanceof Integer) {
+            highestColor = (int) highestColorObject;
+        } else {
+            highestColor = Integer.parseInt(highestColorObject.toString());
             // this might throw a number format exception to tell the method above that there is not a number in the highest color section of the player's
         }
         roles = playerRowValues.get(4).toString();
