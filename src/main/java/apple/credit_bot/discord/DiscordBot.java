@@ -31,6 +31,7 @@ public class DiscordBot extends ListenerAdapter {
     public static final String SUB_COMMAND = "sub";
     public static final String PROFILE_COMMAND = "profile";
     public static final String LEADERBOARD_COMMAND = "list";
+    public static final String UPDATE_COMMAND = "up";
 
     public DiscordBot() {
         File file = new File(BOT_TOKEN_FILE_PATH);
@@ -66,6 +67,7 @@ public class DiscordBot extends ListenerAdapter {
         commandMap.put(PREFIX+SUB_COMMAND,new CommandSub());
         commandMap.put(PREFIX+PROFILE_COMMAND,new CommandProfile());
         commandMap.put(PREFIX+LEADERBOARD_COMMAND,new CommandLeaderBoard());
+        commandMap.put(PREFIX+UPDATE_COMMAND,new CommandUpdate());
     }
 
     @Override

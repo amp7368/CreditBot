@@ -9,7 +9,11 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.temporal.TemporalField;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
@@ -77,7 +81,7 @@ public class SheetsModify {
         if (rowToWrite == -1) {
             isListed = false;
             ValueRange idValueRange = SheetsConstants.sheets.get(SheetsConstants.spreadsheetId,
-                    SheetsRanges.dataSheet + SheetsRanges.discordIds).setMajorDimension("COLUMNS").execute();
+                    SheetsRanges.dataSheet + SheetsRanges.discordIds).execute();
             if (idValueRange.getValues() == null) {
                 rowToWrite = 0;
             } else {
@@ -96,7 +100,8 @@ public class SheetsModify {
         } else {
             try {
                 playerValues.add(playerRowValueRange.getValues().get(0).get(2));
-            } catch (NullPointerException | IndexOutOfBoundsException e) {e.printStackTrace();
+            } catch (NullPointerException | IndexOutOfBoundsException e) {
+                e.printStackTrace();
                 playerValues.add(0);
             }
         }
@@ -120,6 +125,13 @@ public class SheetsModify {
         // guild rank
         playerValues.add(guildRank);
 
+        // days since last active
+        String lastJoin = ((JSONObject) playerData.get("meta")).getString("lastJoin");
+        Instant instant = Instant.parse(lastJoin).minusSeconds(Calendar.getInstance().getTimeInMillis()/1000);
+        int daysSinceLastActive = (int) (instant.getEpochSecond()*-1/60/60/24);
+        playerValues.add(daysSinceLastActive);
+
+        // classes
         JSONArray classes = (JSONArray) playerData.get("classes");
         List<WynncraftClass> myClasses = new ArrayList<>();
         for (Object element : classes) {
@@ -128,7 +140,7 @@ public class SheetsModify {
         myClasses.sort((o1, o2) -> o2.combat.getInt("level") - o1.combat.getInt("level"));
         int myClassesLength = myClasses.size();
         // class type and level
-        for (int i = 0; i <= 6; i++) {
+        for (int i = 0; i < 6; i++) {
             if (i >= myClassesLength) {
                 playerValues.add("None");
             } else {

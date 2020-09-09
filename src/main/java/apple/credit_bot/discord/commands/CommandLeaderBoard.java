@@ -28,6 +28,8 @@ public class CommandLeaderBoard implements DoCommand {
         StringBuilder message = new StringBuilder("```glsl\n");
         boolean first = true;
         for (Profile profile : profiles) {
+            if (profile.credits == 0) // we're done because everyone else has no credits
+                break;
             if (i % 5 == 1) {
                 message.append("-".repeat(49)).append("\n");
             }
