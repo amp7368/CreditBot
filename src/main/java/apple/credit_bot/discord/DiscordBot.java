@@ -36,6 +36,7 @@ public class DiscordBot extends ListenerAdapter {
     public static final String LEADERBOARD_COMMAND = "list";
     public static final String UPDATE_COMMAND = "up";
     public static final String CREDIT_SUM_COMMAND = "total credits";
+    public static final String HELP_COMMAND = "help";
 
     public DiscordBot() {
         File file = new File(BOT_TOKEN_FILE_PATH);
@@ -73,7 +74,9 @@ public class DiscordBot extends ListenerAdapter {
         opCommandMap.put(PREFIX + LEADERBOARD_COMMAND, new CommandLeaderBoard());
         opCommandMap.put(PREFIX + UPDATE_COMMAND, new CommandUpdate());
         opCommandMap.put(PREFIX + CREDIT_SUM_COMMAND, new CommandCreditSum());
+        opCommandMap.put(PREFIX + HELP_COMMAND, new CommandHelpAdmin());
 
+        commandMap.put(PREFIX + HELP_COMMAND, new CommandHelp());
         commandMap.put(PREFIX + PROFILE_COMMAND, new CommandMyProfile());
     }
 
