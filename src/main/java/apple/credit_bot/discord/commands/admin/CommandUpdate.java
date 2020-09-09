@@ -1,5 +1,6 @@
-package apple.credit_bot.discord.commands;
+package apple.credit_bot.discord.commands.admin;
 
+import apple.credit_bot.discord.commands.DoCommand;
 import apple.credit_bot.sheets.SheetsModify;
 import apple.credit_bot.wynncraft.GetPlayerStats;
 import net.dv8tion.jda.api.EmbedBuilder;

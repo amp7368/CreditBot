@@ -2,6 +2,9 @@ package apple.credit_bot.discord;
 
 
 import apple.credit_bot.discord.commands.*;
+import apple.credit_bot.discord.commands.admin.*;
+import apple.credit_bot.discord.commands.normal.CommandHelp;
+import apple.credit_bot.discord.commands.normal.CommandMyProfile;
 import apple.credit_bot.discord.reactions.DoReaction;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;

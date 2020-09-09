@@ -1,21 +1,22 @@
-package apple.credit_bot.discord.commands;
+package apple.credit_bot.discord.commands.admin;
 
 import apple.credit_bot.discord.DiscordBot;
 import apple.credit_bot.discord.DiscordUtils;
+import apple.credit_bot.discord.commands.DoCommand;
 import apple.credit_bot.sheets.SheetsModify;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.io.IOException;
 
-public class CommandAdd implements DoCommand {
+public class CommandSub implements DoCommand {
     @Override
     public void dealWithCommand(MessageReceivedEvent event) {
         String[] eventContentSplit = event.getMessage().getContentStripped().toLowerCase().split(" ");
 
         // if this is not in the proper format, say as such
         if (eventContentSplit.length < 3) {
-            event.getChannel().sendMessage("Usage: " + DiscordBot.PREFIX + DiscordBot.ADD_COMMAND + " [playerName] [pointsToAdd]").queue();
+            event.getChannel().sendMessage("Usage: " + DiscordBot.PREFIX + DiscordBot.SUB_COMMAND + " [playerName] [pointsToAdd]").queue();
             return;
         }
 
@@ -28,9 +29,9 @@ public class CommandAdd implements DoCommand {
         // get the points that we are entering
         int pointsToAdd;
         try {
-            pointsToAdd = Integer.parseInt(eventContentSplit[2]);
+            pointsToAdd = -Integer.parseInt(eventContentSplit[2]);
         } catch (NumberFormatException e) {
-            event.getChannel().sendMessage("Usage: " + DiscordBot.PREFIX + DiscordBot.ADD_COMMAND + " [playerName] [pointsToAdd]\n'" + eventContentSplit[2] + "' is not a number.").queue();
+            event.getChannel().sendMessage("Usage: " + DiscordBot.PREFIX + DiscordBot.SUB_COMMAND + " [playerName] [pointsToAdd]\n'" + eventContentSplit[2] + "' is not a number.").queue();
             return;
         }
 

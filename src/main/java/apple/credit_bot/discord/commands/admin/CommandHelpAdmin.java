@@ -1,5 +1,6 @@
-package apple.credit_bot.discord.commands;
+package apple.credit_bot.discord.commands.admin;
 
+import apple.credit_bot.discord.commands.DoCommand;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import static apple.credit_bot.discord.DiscordBot.*;
