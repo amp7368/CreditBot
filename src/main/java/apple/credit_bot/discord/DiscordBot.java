@@ -91,7 +91,7 @@ public class DiscordBot extends ListenerAdapter {
 
         if (member.hasPermission(Permission.MANAGE_SERVER)) {
             // deal with the different commands
-            for (String command : commandMap.keySet()) {
+            for (String command : opCommandMap.keySet()) {
                 if (messageContent.startsWith(command)) {
                     opCommandMap.get(command).dealWithCommand(event);
                     break;
