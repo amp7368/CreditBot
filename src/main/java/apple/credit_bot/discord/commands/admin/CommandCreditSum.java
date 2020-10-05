@@ -23,7 +23,6 @@ public class CommandCreditSum implements DoCommand {
             event.getChannel().sendMessage("Everyone together has a total of " + credits + " credits").queue();
         } catch (IOException e) {
             event.getChannel().sendMessage("There was an issue processing that request.").queue();
-            e.printStackTrace();
         }
     }
 }

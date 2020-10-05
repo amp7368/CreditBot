@@ -1,7 +1,6 @@
 package apple.credit_bot.sheets;
 
 import apple.credit_bot.discord.data.Profile;
-import apple.credit_bot.wynncraft.GetPlayerStats;
 import com.google.api.services.sheets.v4.model.ValueRange;
 import net.dv8tion.jda.api.entities.Member;
 
@@ -11,7 +10,7 @@ import java.util.List;
 
 public class SheetsQuery {
     public static Profile getProfile(Member discordMember) throws IOException {
-        int row = SheetsModify.verifyProfile(discordMember, GetPlayerStats.get(discordMember.getEffectiveName()));
+        int row = SheetsModify.verifyProfile(discordMember, discordMember.getEffectiveName());
         final String playerRowRange = SheetsRanges.dataSheet + SheetsUtils.addA1Notation(SheetsRanges.playerRow1, 0, row) +
                 ":" + SheetsUtils.addA1Notation(SheetsRanges.playerRow2, 0, row);
         ValueRange playerRowValueRange = SheetsConstants.sheets.get(SheetsConstants.spreadsheetId, playerRowRange).execute();

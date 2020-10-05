@@ -23,4 +23,3 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['JDA.jar'])
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }
-project.buildDir = 'C:\\Users\\Aaron\\Desktop\\creditBot'

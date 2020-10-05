@@ -8,6 +8,7 @@ import static apple.credit_bot.discord.DiscordBot.*;
 public class CommandHelp implements DoCommand {
     @Override
     public void dealWithCommand(MessageReceivedEvent event) {
-        event.getChannel().sendMessage("**" + PREFIX + PROFILE_COMMAND + "** - gives you your current stats").queue();
+        event.getChannel().sendMessage("**" + PREFIX + PROFILE_COMMAND + "** - gives you your current stats" +
+                "\n**" + PREFIX + REDEEM_COMMAND + " [pts] [a message]** - redeems that many points and dms Founder").queue();
     }
 }

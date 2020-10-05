@@ -16,7 +16,7 @@ public class CommandAdd implements DoCommand {
 
         // if this is not in the proper format, say as such
         if (eventContentSplit.length < 3) {
-            event.getChannel().sendMessage("Usage: " + DiscordBot.PREFIX + DiscordBot.ADD_COMMAND + " [playerName] [pointsToAdd]").queue();
+            event.getChannel().sendMessage("Usage: " + DiscordBot.PREFIX + DiscordBot.ADD_COMMAND + " [playerName] [creditsToAdd]").queue();
             return;
         }
 
@@ -31,15 +31,15 @@ public class CommandAdd implements DoCommand {
         try {
             pointsToAdd = Integer.parseInt(eventContentSplit[2]);
         } catch (NumberFormatException e) {
-            event.getChannel().sendMessage("Usage: " + DiscordBot.PREFIX + DiscordBot.ADD_COMMAND + " [playerName] [pointsToAdd]\n'" + eventContentSplit[2] + "' is not a number.").queue();
+            event.getChannel().sendMessage("Usage: " + DiscordBot.PREFIX + DiscordBot.ADD_COMMAND + " [playerName] [creditsToAdd]\n'" + eventContentSplit[2] + "' is not a number.").queue();
             return;
         }
 
         try {
             int newPoints = SheetsModify.addPoints(discordMember, pointsToAdd);
-            event.getChannel().sendMessage(discordMember.getEffectiveName() + " now has " + newPoints + " point(s)").queue();
+            event.getChannel().sendMessage(discordMember.getEffectiveName() + " now has " + newPoints + " credits(s)").queue();
         } catch (IOException e) {
-            e.printStackTrace();
+            event.getChannel().sendMessage("There was an error. Perhaps the name is not their ign.").queue();
         } catch (NumberFormatException e) {
             event.getChannel().sendMessage("There was an error reading the number of credits that "
                     + discordMember.getEffectiveName() + " has.").queue();

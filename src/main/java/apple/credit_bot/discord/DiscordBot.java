@@ -1,10 +1,12 @@
 package apple.credit_bot.discord;
 
 
+import apple.credit_bot.CreditMain;
 import apple.credit_bot.discord.commands.*;
 import apple.credit_bot.discord.commands.admin.*;
 import apple.credit_bot.discord.commands.normal.CommandHelp;
 import apple.credit_bot.discord.commands.normal.CommandMyProfile;
+import apple.credit_bot.discord.commands.normal.CommandRedeem;
 import apple.credit_bot.discord.reactions.DoReaction;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -20,10 +22,11 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nonnull;
 import javax.security.auth.login.LoginException;
 import java.io.*;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 public class DiscordBot extends ListenerAdapter {
-    private static final String BOT_TOKEN_FILE_PATH = "data/discordToken.data";
 
 
     private static final HashMap<String, DoCommand> commandMap = new HashMap<>();
@@ -37,11 +40,15 @@ public class DiscordBot extends ListenerAdapter {
     public static final String SUB_COMMAND = "sub";
     public static final String PROFILE_COMMAND = "profile";
     public static final String LEADERBOARD_COMMAND = "list";
-    public static final String UPDATE_COMMAND = "up";
+    public static final String UPDATE_COMMAND = "update";
     public static final String CREDIT_SUM_COMMAND = "total credits";
     public static final String HELP_COMMAND = "help";
+    public static final String REDEEM_COMMAND = "redeem";
 
     public DiscordBot() {
+        List<String> list = Arrays.asList(CreditMain.class.getProtectionDomain().getCodeSource().getLocation().getPath().split("/"));
+        String BOT_TOKEN_FILE_PATH = String.join("/", list.subList(0, list.size() - 1)) + "/data/discordToken.data";
+
         File file = new File(BOT_TOKEN_FILE_PATH);
         if (!file.exists()) {
             try {
@@ -78,9 +85,11 @@ public class DiscordBot extends ListenerAdapter {
         opCommandMap.put(PREFIX + UPDATE_COMMAND, new CommandUpdate());
         opCommandMap.put(PREFIX + CREDIT_SUM_COMMAND, new CommandCreditSum());
         opCommandMap.put(PREFIX + HELP_COMMAND, new CommandHelpAdmin());
+        opCommandMap.put(PREFIX + REDEEM_COMMAND, new CommandRedeem());
 
         commandMap.put(PREFIX + HELP_COMMAND, new CommandHelp());
         commandMap.put(PREFIX + PROFILE_COMMAND, new CommandMyProfile());
+        commandMap.put(PREFIX + REDEEM_COMMAND, new CommandRedeem());
     }
 
     @Override

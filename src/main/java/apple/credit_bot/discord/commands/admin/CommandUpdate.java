@@ -31,7 +31,7 @@ public class CommandUpdate implements DoCommand {
                 Member member = members.get(i);
                 if (!member.getUser().isBot()) {
                     try {
-                        SheetsModify.verifyProfile(member, GetPlayerStats.get(member.getEffectiveName()));
+                        SheetsModify.verifyProfile(member, member.getEffectiveName());
                     } catch (IOException | JSONException e){
                         nicknamesNotFound.add(member.getEffectiveName());
                         // if the nickname was not found

@@ -9,9 +9,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.time.Instant;
-import java.time.temporal.TemporalField;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -19,7 +17,7 @@ import java.util.List;
 
 public class SheetsModify {
     public static int addPoints(Member member, int pointsToAdd) throws IOException, NumberFormatException {
-        int rowToModify = verifyProfile(member, GetPlayerStats.get(member.getEffectiveName()));
+        int rowToModify = verifyProfile(member, member.getEffectiveName());
         String creditsRange = SheetsRanges.dataSheet + SheetsUtils.addA1Notation(SheetsRanges.credits, 0, rowToModify);
         ValueRange creditsValueRange = SheetsConstants.sheets.get(SheetsConstants.spreadsheetId,
                 creditsRange).execute();
@@ -38,6 +36,9 @@ public class SheetsModify {
         } catch (NullPointerException | IndexOutOfBoundsException e) {
             creditsValueRange.setValues(Collections.singletonList(Collections.singletonList(pointsToAdd)));
             newPoints = pointsToAdd;
+        }
+        if (newPoints < 0) {
+            throw new IllegalArgumentException();
         }
         SheetsConstants.sheets.update(SheetsConstants.spreadsheetId, creditsRange, creditsValueRange).setValueInputOption("USER_ENTERED").execute();
         return newPoints;
@@ -69,12 +70,11 @@ public class SheetsModify {
         return -1;
     }
 
-    public static int verifyProfile(Member member, JSONObject playerObject) throws IOException {
+    public static int verifyProfile(Member member, String givenPlayerName) throws IOException {
         List<String> roles = new ArrayList<>();
         for (Role role : member.getRoles()) {
             roles.add(role.getName());
         }
-        JSONObject playerData = (JSONObject) ((JSONArray) playerObject.get("data")).get(0);
 
         int rowToWrite = findRowFromDiscord(member.getId());
         boolean isListed = true;
@@ -93,20 +93,39 @@ public class SheetsModify {
                 + ":" + SheetsUtils.addA1Notation(SheetsRanges.playerRow2, 0, rowToWrite);
         ValueRange playerRowValueRange = SheetsConstants.sheets.get(SheetsConstants.spreadsheetId, outputRange).execute();
         List<Object> playerValues = new ArrayList<>();
-        playerValues.add(member.getEffectiveName());
+        playerValues.add(-1);
         playerValues.add(member.getId());
+        String oldUserName = null;
         if (!isListed) {
             playerValues.add(0);
         } else {
             try {
                 playerValues.add(playerRowValueRange.getValues().get(0).get(2));
+                oldUserName = playerRowValueRange.getValues().get(0).get(0).toString();
             } catch (NullPointerException | IndexOutOfBoundsException e) {
-                e.printStackTrace();
                 playerValues.add(0);
             }
         }
         playerValues.add(member.getColorRaw());
         playerValues.add(String.join(", ", roles));
+
+        JSONObject playerObject;
+
+        try {
+            playerObject = GetPlayerStats.get(givenPlayerName);
+            playerValues.set(0,givenPlayerName);
+        } catch (IOException e) {
+            if (oldUserName == null) {
+                playerRowValueRange.setValues(Collections.singletonList(playerValues));
+                SheetsConstants.sheets.update(SheetsConstants.spreadsheetId, playerRowValueRange.getRange(), playerRowValueRange).setValueInputOption("USER_ENTERED").execute();
+                return rowToWrite;
+            } else {
+                // this might throw an error and that's good
+                playerObject = GetPlayerStats.get(oldUserName);
+                playerValues.set(0,oldUserName);
+            }
+        }
+        JSONObject playerData = (JSONObject) ((JSONArray) playerObject.get("data")).get(0);
 
         JSONObject guildData = (JSONObject) playerData.get("guild");
         String guildName;
@@ -127,8 +146,8 @@ public class SheetsModify {
 
         // days since last active
         String lastJoin = ((JSONObject) playerData.get("meta")).getString("lastJoin");
-        Instant instant = Instant.parse(lastJoin).minusSeconds(Calendar.getInstance().getTimeInMillis()/1000);
-        int daysSinceLastActive = (int) (instant.getEpochSecond()*-1/60/60/24);
+        Instant instant = Instant.parse(lastJoin).minusSeconds(Calendar.getInstance().getTimeInMillis() / 1000);
+        int daysSinceLastActive = (int) (instant.getEpochSecond() * -1 / 60 / 60 / 24);
         playerValues.add(daysSinceLastActive);
 
         // classes

@@ -13,6 +13,7 @@ public class CommandHelpAdmin implements DoCommand {
                 "**" + PREFIX + SUB_COMMAND + " [player] [credits]** - subtracts that number of credits from that player\n" +
                 "**" + PREFIX + LEADERBOARD_COMMAND + "** - gives a list of all the players with credits\n" +
                 "**" + PREFIX + UPDATE_COMMAND + "** - updates the entire spreadsheet once (Shouldn't be needed much because " + PREFIX + PROFILE_COMMAND + " updates that player's stats)\n" +
-                "**" + PREFIX + CREDIT_SUM_COMMAND + "** - gives the number of credits the community currently has\n").queue();
+                "**" + PREFIX + CREDIT_SUM_COMMAND + "** - gives the number of credits the community currently has\n"+
+                "**" + PREFIX + REDEEM_COMMAND + " [pts] [a message]** - redeems that many points and dms Founder\n").queue();
     }
 }

@@ -32,7 +32,7 @@ public class CommandProfile implements DoCommand {
         try {
             profile = SheetsQuery.getProfile(discordMember);
         } catch (IOException e) {
-            e.printStackTrace();
+            event.getChannel().sendMessage("There was some sort of internal IOException getting your profile").queue();
             return;
         }
         EmbedBuilder embedBuilder = new EmbedBuilder();

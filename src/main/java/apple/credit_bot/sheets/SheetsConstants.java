@@ -7,12 +7,15 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 public class SheetsConstants {
-    private static final String SHEET_ID_FILE_PATH = "data/sheetId.data";
     public static String spreadsheetId = "";
 
     static {
+        List<String> list = Arrays.asList(CreditMain.class.getProtectionDomain().getCodeSource().getLocation().getPath().split("/"));
+        String SHEET_ID_FILE_PATH = String.join("/", list.subList(0, list.size() - 1)) + "/data/sheetId.data";
         File file = new File(SHEET_ID_FILE_PATH);
         if (!file.exists()) {
             try {
